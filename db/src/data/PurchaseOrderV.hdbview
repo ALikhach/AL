@@ -1,0 +1,17 @@
+VIEW "Hana.db.data::PurchaseOrderV" 
+
+AS SELECT 
+
+Item.PURCHASEORDERITEMID,
+Item.MATERIALNUMBER,  
+Item.QUANTITY,
+Header.PRICE 
+
+FROM "Hana.db.data::PurchaseOrderItem" AS Item
+JOIN "Hana.db.data::PurchaseOrderHeader" AS Header 
+ON Item.PURCHASEORDERID = Header.PURCHASEORDERID 
+WHERE Header.PRICE > 0
+
+
+
+
