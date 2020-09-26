@@ -1,0 +1,29 @@
+procedure "Hana.db.data.procedures::format_string" (
+           OUT ex_strout table( result nvarchar(5000)),
+           OUT ex_tabout table( PRODUCTID nvarchar(10), PRICE decimal(15,2)) )
+           
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+READS SQL DATA AS
+BEGIN USING SQLSCRIPT_STRING AS LIB; 
+
+DECLARE lv_index integer;
+DECLARE lv_product string;
+DECLARE lv_price string;
+DECLARE lt_table TABLE LIKE :ex_tabout;
+
+lt_table.PRODUCTID[1] = 'HT-1000';
+lt_table.PRICE[1]     = '2';
+
+lt_table.PRODUCTID[2] = 'HT-1001';
+lt_table.PRICE[2]     = '5';
+
+ex_strout = LIB:FORMAT_TO_TABLE('{PRODUCTID}, {PRICE}', :lt_table);
+
+FOR lv_index IN 1..RECORD_COUNT(:ex_strout) DO
+  ( lv_product, lv_price )        = LIB:SPLIT( :ex_strout.result[lv_index], ',' );
+    ex_tabout.PRODUCTID[lv_index] = lv_product;
+    ex_tabout.PRICE[lv_index]     = lv_price;
+END FOR;
+
+END
