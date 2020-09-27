@@ -1,49 +1,49 @@
 ID: Hana
 _schema-version: '2.1'
 parameters:
-   deploy_mode: html5-repo
+  deploy_mode: html5-repo
 version: 0.0.1
-
 modules:
- - name: hana-approuter
-   type: approuter.nodejs
-   path: hana-approuter
-   parameters:
+  - name: hana-approuter
+    type: approuter.nodejs
+    path: hana-approuter
+    parameters:
       disk-quota: 256M
       memory: 256M
-   requires:
-    - name: Hana_html5_repo_runtime
-
-
- - name: Hana_ui_deployer
-   type: com.sap.html5.application-content
-   path: Hana_ui_deployer
-   requires:
-    - name: Hana_html5_repo_host
-
-
- - name: db
-   type: hdb
-   path: db
-   requires:
-    - name: hdi_db
-
+    requires:
+      - name: Hana_html5_repo_runtime
+  - name: Hana_ui_deployer
+    type: com.sap.html5.application-content
+    path: Hana_ui_deployer
+    requires:
+      - name: Hana_html5_repo_host
+  - name: db
+    type: hdb
+    path: db
+    requires:
+      - name: hdi_db
+  - name: xsjs
+    type: nodejs
+    path: xsjs
+    provides:
+      - name: xsjs_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: hdi_db
+      - name: db
 resources:
- - name: Hana_html5_repo_runtime
-   parameters:
+  - name: Hana_html5_repo_runtime
+    parameters:
       service-plan: app-runtime
       service: html5-apps-repo
-   type: org.cloudfoundry.managed-service
-
- - name: Hana_html5_repo_host
-   parameters:
+    type: org.cloudfoundry.managed-service
+  - name: Hana_html5_repo_host
+    parameters:
       service-plan: app-host
       service: html5-apps-repo
-   type: org.cloudfoundry.managed-service
-
-
- - name: hdi_db
-   properties:
-      hdi-container-name: ${service-name}
-   type: com.sap.xs.hdi-container
-
+    type: org.cloudfoundry.managed-service
+  - name: hdi_db
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container
